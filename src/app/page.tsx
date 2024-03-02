@@ -1,10 +1,10 @@
-import Home from "@/app/components/Home/Home";
-import styles from "./page.module.scss";
+import Layout from "@/components/Layout/Layout";
+import Home from "@/components/Home/Home";
 
 export default function HomePage() {
   return (
-    <main className={styles.main}>
+    <Layout>
       <Home />
-    </main>
+    </Layout>
   );
 }

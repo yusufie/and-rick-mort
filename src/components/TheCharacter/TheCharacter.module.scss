@@ -1,0 +1,37 @@
+.character {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    width: 100%;
+    padding: 2rem 2rem;
+
+    & h1 {
+        margin-bottom: 2rem;
+    }
+}
+
+.cardWrapper {
+
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+    padding: 2rem 4rem;
+    border: 1px solid #000;
+    border-radius: 1rem;
+
+    & img {
+        width: 20rem;
+        height: 20rem;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+}
+
+.cardInfo {
+    display: flex;
+    flex-direction: column;
+}

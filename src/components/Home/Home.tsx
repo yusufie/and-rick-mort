@@ -1,6 +1,7 @@
 "use client"
 import useSWR from "swr"
 import Link from "next/link";
+import styles from './Home.module.scss'
 
 const fetcher = (url: any) => fetch(url).then((res) => res.json());
 
@@ -13,11 +14,11 @@ const Home: React.FC = () => {
     console.log(data.results)
   return (
 
-    <section>
+    <section className={styles.home} >
         <h1>Locations</h1>
-        <ul>
+        <ul className={styles.orderedlist}>
             {data.results.map((location: any) => (
-                <Link href={`${location.id}`} key={location.id}>
+                <Link href={`/location/${location.id}`} key={location.id}>
                     <li>{location.name}</li>
                 </Link>
             ))}
