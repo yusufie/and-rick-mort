@@ -15,54 +15,48 @@ const TheLocation: React.FC = () => {
   const toggleLikeProduct = useLikeStore((state) => state.toggleLikeCharacter);
   const likedProducts = useLikeStore((state) => state.likedCharacters);
 
-  // filter states for the residents
-    // handle click event for alive, unknown, and dead
-    const [showAll, setShowAll] = useState(true);
-    const [showAlive, setShowAlive] = useState(false);
-    const [showDead, setShowDead] = useState(false);
-    const [showUnknown, setShowUnknown] = useState(false);
-
   const { id } = useParams();
   console.log("The location params:", id)
 
    const { data, error } = useSWR(`https://rickandmortyapi.com/api/location/${id}`, fetcher)
 
-   const [residentsData, setResidentsData] = useState([]);
+  const [residentsData, setResidentsData] = useState([]);
+  const [filteredResidents, setFilteredResidents] = useState([]);
 
    useEffect(() => {
-     const fetchResidentsDetails = async () => {
-       if (data && data.residents) {
-         const residentsDetails: any = await Promise.all(
-           data.residents.map((residentUrl: any) => fetcher(residentUrl))
-         );
-         setResidentsData(residentsDetails);
-       }
-     };
- 
-     fetchResidentsDetails();
-   }, [data]);
+    const fetchResidentsDetails = async () => {
+      if (data && data.residents) {
+        const residentsDetails: any = await Promise.all(
+          data.residents.map((residentUrl: any) => fetcher(residentUrl))
+        );
+        setResidentsData(residentsDetails);
+        setFilteredResidents(residentsDetails); // Set filtered residents initially
+      }
+    };
+    fetchResidentsDetails();
+  }, [data]);
  
    if (!data) return <div>Loading...</div>;
    if (error) return <div>Failed to load</div>;
    console.log("residentsData:", residentsData)
 
-   // filter out the residents that are alive, unknown, or dead
-    const aliveResidents = residentsData.filter((resident: any) => resident.status === "Alive");
-    const unknownResidents = residentsData.filter((resident: any) => resident.status === "unknown");
-    const deadResidents = residentsData.filter((resident: any) => resident.status === "Dead");
-    console.log("aliveResidents:", aliveResidents)
-    console.log("unknownResidents:", unknownResidents)
-    console.log("deadResidents:", deadResidents)
-
-    // display all residents, if it filtered out by alive, unknown, or dead
-    const residents = residentsData.filter((resident: any) => resident.status === "Alive" || resident.status === "unknown" || resident.status === "Dead");
-
-    const handleShowAll = () => {
-      setShowAll(true);
-      setShowAlive(false);
-      setShowDead(false);
-      setShowUnknown(false);
-    }
+    const handleFilterClick = (status: string) => {
+      let filteredRes;
+      switch (status) {
+        case "Alive":
+          filteredRes = residentsData.filter((resident: any) => resident.status === "Alive");
+          break;
+        case "Unknown":
+          filteredRes = residentsData.filter((resident: any) => resident.status === "unknown");
+          break;
+        case "Dead":
+          filteredRes = residentsData.filter((resident: any) => resident.status === "Dead");
+          break;
+        default:
+          filteredRes = residentsData;
+      }
+      setFilteredResidents(filteredRes);
+    };
 
     const handleLikeProduct = (resident: any) => {
       toggleLikeProduct(resident);
@@ -71,12 +65,20 @@ const TheLocation: React.FC = () => {
   return (
     <section className={styles.location}>
 
+      {/* Title Residents */}
       <h1>{data.name}</h1>
 
-      {/* filter residents */}   
+      {/* filter residents */}
+      <section className={styles.filterButtons} >
+        <button onClick={() => handleFilterClick("Alive")}>Alive</button>
+        <button onClick={() => handleFilterClick("Unknown")}>Unknown</button>
+        <button onClick={() => handleFilterClick("Dead")}>Dead</button>
+        <button onClick={() => setFilteredResidents(residentsData)}>All</button>
+      </section>
 
+      {/* display residents */}
       <article className={styles.cards}>
-        {residents?.map((resident: any) => (
+        {filteredResidents?.map((resident: any) => (
           
             <article key={resident.id} className={styles.card}>
               <Image src={resident.image} alt={resident.name} width={200} height={200} />
@@ -86,12 +88,11 @@ const TheLocation: React.FC = () => {
               <p>Status: {resident.status}</p>
               <p>Species: {resident.species}</p>
               <p>Status: {resident.status}</p>
-              <button
+              <button 
                 className={styles.likeButton}
                 onClick={() => handleLikeProduct(resident)}
               >
-                {/* {likedProducts.some((p) => p.id === resident.id) ? "Unlike" : "Like"} */}
-                like
+                {likedProducts.includes(resident) ? "Unlike" : "Like"}
               </button>
             </article>
           

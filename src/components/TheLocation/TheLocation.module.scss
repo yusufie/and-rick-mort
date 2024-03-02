@@ -38,6 +38,29 @@
     }
 }
 
+.filterButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 1rem;
+
+    & button {
+        width: 100px;
+        height: 2.5rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4);
+        }
+    }
+}
+
 .likeButton {
     display: flex;
     justify-content: center;
